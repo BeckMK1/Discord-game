@@ -1,0 +1,314 @@
+[gd_scene load_steps=39 format=3 uid="uid://psxuvki8phky"]
+
+[ext_resource type="Texture2D" uid="uid://12geuu3mnrg" path="res://player/player.png" id="1_p7q3c"]
+[ext_resource type="Script" path="res://player/player.gd" id="1_vslnj"]
+[ext_resource type="Script" path="res://player/PlayerStateMachine.gd" id="3_mv3df"]
+[ext_resource type="Script" path="res://player/GroundState.gd" id="4_281hp"]
+[ext_resource type="Script" path="res://player/AirState.gd" id="5_ruwqn"]
+[ext_resource type="Script" path="res://player/LandingState.gd" id="6_wbfpm"]
+[ext_resource type="Script" path="res://player/stateDebug.gd" id="7_70r60"]
+[ext_resource type="Script" path="res://player/DashState.gd" id="7_qf175"]
+[ext_resource type="Script" path="res://player/dashStateLabel.gd" id="8_1h0gh"]
+
+[sub_resource type="Animation" id="Animation_r6flf"]
+resource_name = "Jump"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(0.5, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_5aab7"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player:skew")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Player:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_ljgf8"]
+resource_name = "WalkLeft"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player:skew")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 0.191986]
+}
+
+[sub_resource type="Animation" id="Animation_63e5e"]
+resource_name = "WalkRight"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player:skew")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, -0.191986]
+}
+
+[sub_resource type="Animation" id="Animation_rawc8"]
+resource_name = "Landing"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.5, 1), Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_vmfm3"]
+resource_name = "Double_jump"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.5, 1), Vector2(0.3, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_cr78f"]
+resource_name = "Dash"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1, 0.5)]
+}
+
+[sub_resource type="Animation" id="Animation_utst5"]
+resource_name = "Exit_dash"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1, 0.5), Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_u7s47"]
+_data = {
+"Dash": SubResource("Animation_cr78f"),
+"Double_jump": SubResource("Animation_vmfm3"),
+"Exit_dash": SubResource("Animation_utst5"),
+"Jump": SubResource("Animation_r6flf"),
+"Landing": SubResource("Animation_rawc8"),
+"RESET": SubResource("Animation_5aab7"),
+"WalkLeft": SubResource("Animation_ljgf8"),
+"WalkRight": SubResource("Animation_63e5e")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l3lrq"]
+size = Vector2(129, 128)
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_7wq6j"]
+animation = &"Dash"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_14vi0"]
+animation = &"Double_jump"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_se8xu"]
+animation = &"Exit_dash"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_jpf72"]
+animation = &"Jump"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3if5e"]
+animation = &"Landing"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3yr0u"]
+animation = &"WalkRight"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_w3kr2"]
+animation = &"RESET"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_x1fut"]
+animation = &"WalkLeft"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_m738k"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_3yr0u")
+blend_point_0/pos = -1.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_w3kr2")
+blend_point_1/pos = 0.0
+blend_point_2/node = SubResource("AnimationNodeAnimation_x1fut")
+blend_point_2/pos = 1.0
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_11fm1"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_g183o"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_d5oth"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_rf5t5"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_hwqws"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_sm84l"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_o28gd"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_b8o2a"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_rclk0"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_kyv43"]
+states/Dash/node = SubResource("AnimationNodeAnimation_7wq6j")
+states/Dash/position = Vector2(415, 251)
+states/Double_jump/node = SubResource("AnimationNodeAnimation_14vi0")
+states/Double_jump/position = Vector2(550, 107)
+states/End/position = Vector2(893, 107)
+states/Exit_dash/node = SubResource("AnimationNodeAnimation_se8xu")
+states/Exit_dash/position = Vector2(537, 251)
+states/Jump/node = SubResource("AnimationNodeAnimation_jpf72")
+states/Jump/position = Vector2(415, 107)
+states/Landing/node = SubResource("AnimationNodeAnimation_3if5e")
+states/Landing/position = Vector2(537, 187)
+states/Start/position = Vector2(202, 187)
+states/Walk/node = SubResource("AnimationNodeBlendSpace1D_m738k")
+states/Walk/position = Vector2(415, 187)
+transitions = ["Start", "Walk", SubResource("AnimationNodeStateMachineTransition_11fm1"), "Walk", "Jump", SubResource("AnimationNodeStateMachineTransition_g183o"), "Jump", "Landing", SubResource("AnimationNodeStateMachineTransition_d5oth"), "Landing", "Walk", SubResource("AnimationNodeStateMachineTransition_rf5t5"), "Jump", "Double_jump", SubResource("AnimationNodeStateMachineTransition_hwqws"), "Double_jump", "Landing", SubResource("AnimationNodeStateMachineTransition_sm84l"), "Walk", "Dash", SubResource("AnimationNodeStateMachineTransition_o28gd"), "Dash", "Exit_dash", SubResource("AnimationNodeStateMachineTransition_b8o2a"), "Exit_dash", "Walk", SubResource("AnimationNodeStateMachineTransition_rclk0")]
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_vslnj")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_u7s47")
+}
+
+[node name="Player" type="Sprite2D" parent="."]
+texture = ExtResource("1_p7q3c")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, 0)
+shape = SubResource("RectangleShape2D_l3lrq")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+tree_root = SubResource("AnimationNodeStateMachine_kyv43")
+anim_player = NodePath("../AnimationPlayer")
+parameters/Walk/blend_position = 0.0
+
+[node name="PlayerStateMachine" type="Node" parent="." node_paths=PackedStringArray("character", "current_state", "animation_tree")]
+script = ExtResource("3_mv3df")
+character = NodePath("..")
+current_state = NodePath("Ground")
+animation_tree = NodePath("../AnimationTree")
+
+[node name="Ground" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("air_state", "dash_state")]
+script = ExtResource("4_281hp")
+air_state = NodePath("../Air")
+dash_state = NodePath("../Dash")
+
+[node name="Air" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("landing_state")]
+script = ExtResource("5_ruwqn")
+landing_state = NodePath("../Landing")
+
+[node name="Landing" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("ground_state")]
+script = ExtResource("6_wbfpm")
+ground_state = NodePath("../Ground")
+
+[node name="Dash" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("landing_state", "ground_state")]
+script = ExtResource("7_qf175")
+landing_state = NodePath("../Landing")
+ground_state = NodePath("../Ground")
+
+[node name="stateDebug" type="Label" parent="." node_paths=PackedStringArray("state_machine")]
+offset_left = -57.0
+offset_top = -102.0
+offset_right = 59.0
+offset_bottom = -79.0
+text = "State:"
+script = ExtResource("7_70r60")
+state_machine = NodePath("../PlayerStateMachine")
+
+[node name="dashState" type="Label" parent="." node_paths=PackedStringArray("state_machine")]
+offset_left = -59.0
+offset_top = -125.0
+offset_right = 79.0
+offset_bottom = -102.0
+text = "can dash:"
+script = ExtResource("8_1h0gh")
+state_machine = NodePath("../PlayerStateMachine")
+
+[node name="dashDuration" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 0.2
+one_shot = true
+
+[node name="dashCD" type="Timer" parent="."]
+unique_name_in_owner = true
+
+[connection signal="animation_finished" from="AnimationTree" to="PlayerStateMachine/Landing" method="_on_animation_tree_animation_finished"]
+[connection signal="animation_finished" from="AnimationTree" to="PlayerStateMachine/Dash" method="_on_animation_tree_animation_finished"]
+[connection signal="timeout" from="dashDuration" to="PlayerStateMachine/Dash" method="_on_dash_timer_timeout"]
+[connection signal="timeout" from="dashCD" to="." method="_on_dash_cd_timeout"]
